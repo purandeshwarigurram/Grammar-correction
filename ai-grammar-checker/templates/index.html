@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Grammar Checker - Write Better. Communicate Smarter.</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#home" class="brand-logo">
+        <div class="logo-icon">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">AI Grammar Checker</span>
+          <span class="logo-badge">PRO</span>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#home" class="nav-link active"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="#checker" class="nav-link"><i class="fa-solid fa-pen-nib"></i> Editor</a>
+        <a href="#stats" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Analysis</a>
+        <a href="#features" class="nav-link"><i class="fa-solid fa-bolt"></i> Features</a>
+        <a href="#about" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="#checker" class="btn btn-sm btn-primary">
+          <i class="fa-solid fa-bolt"></i> Try Live
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero-section">
+    <div class="hero-glow"></div>
+    <div class="container hero-content">
+      <div class="pill-badge">
+        <i class="fa-solid fa-sparkles text-primary"></i> Powered by NLP & LanguageTool Intelligence
+      </div>
+      <h1 class="hero-title">
+        Write Better. <span class="gradient-text">Communicate Smarter.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Improve your writing with intelligent grammar checking and instant corrections.
+        Catch complex agreement errors, tricky misspellings, confused words, and punctuation slips instantly.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#checker" class="btn btn-lg btn-primary shadow-pulse">
+          <i class="fa-solid fa-pen-to-square"></i> Get Started Free
+        </a>
+        <a href="#features" class="btn btn-lg btn-outline">
+          <i class="fa-solid fa-circle-play"></i> Explore Features
+        </a>
+      </div>
+
+      <!-- Quick Test Sentences Banner for Workshop Demos -->
+      <div class="sample-prompts-card">
+        <div class="sample-label">
+          <i class="fa-solid fa-lightbulb text-warning"></i>
+          <span>Click to test sample sentences:</span>
+        </div>
+        <div class="sample-chips">
+          <button class="chip-btn" data-sample="I has a apple.">
+            <span class="chip-num">1</span> "I has a apple."
+          </button>
+          <button class="chip-btn" data-sample="She go to college everyday.">
+            <span class="chip-num">2</span> "She go to college everyday."
+          </button>
+          <button class="chip-btn" data-sample="They is playing cricket.">
+            <span class="chip-num">3</span> "They is playing cricket."
+          </button>
+          <button class="chip-btn" data-sample="I am a student.">
+            <span class="chip-num">4</span> "I am a student." (Clean)
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Grammar Checker Section -->
+  <section id="checker" class="checker-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Interactive Grammar Workspace</h2>
+        <p class="section-subtitle">Type, paste, or test your text below to get instant real-time AI feedback.</p>
+      </div>
+
+      <div class="checker-grid">
+        <!-- Left Column: Text Input Editor -->
+        <div class="editor-panel card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i class="fa-solid fa-align-left text-primary"></i>
+              <span class="panel-title">Text Editor</span>
+              <span id="engineBadge" class="engine-badge">
+                <i class="fa-solid fa-server"></i> Ready
+              </span>
+            </div>
+
+            <div class="panel-header-actions">
+              <div class="language-selector-wrapper">
+                <i class="fa-solid fa-globe"></i>
+                <select id="languageSelect" class="language-select">
+                  <option value="en-US" selected>English (US)</option>
+                  <option value="en-GB">English (UK)</option>
+                  <option value="en-CA">English (Canada)</option>
+                  <option value="en-AU">English (Australia)</option>
+                </select>
+              </div>
+
+              <button id="clearTextBtn" class="btn-icon" title="Clear Text">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Text Input Area -->
+          <div class="editor-wrapper">
+            <textarea
+              id="textInput"
+              class="editor-textarea"
+              placeholder="Enter or paste your text here to check grammar..."
+              spellcheck="false"
+            ></textarea>
+
+            <!-- Highlight Layer (Shows colored markers behind or alongside text) -->
+            <div id="highlightPreview" class="highlight-preview hidden"></div>
+          </div>
+
+          <!-- Live Metrics & Counters Bar -->
+          <div class="editor-footer">
+            <div class="editor-counts">
+              <span class="count-item">
+                <i class="fa-solid fa-font"></i>
+                <strong><span id="charCount">0</span></strong> Characters
+              </span>
+              <span class="count-divider">•</span>
+              <span class="count-item">
+                <i class="fa-solid fa-file-word"></i>
+                <strong><span id="wordCount">0</span></strong> Words
+              </span>
+              <span class="count-divider">•</span>
+              <span class="count-item">
+                <i class="fa-solid fa-clock"></i>
+                <span id="readTime">0 min read</span>
+              </span>
+            </div>
+
+            <div class="view-toggle-group">
+              <button id="toggleHighlightBtn" class="toggle-btn" title="Toggle Highlighted Overlay">
+                <i class="fa-solid fa-highlighter"></i> View Highlights
+              </button>
+            </div>
+          </div>
+
+          <!-- Action Buttons Bar -->
+          <div class="editor-actions-bar">
+            <div class="actions-primary">
+              <button id="checkGrammarBtn" class="btn btn-primary btn-check">
+                <span class="btn-content">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i> Check Grammar
+                </span>
+                <span class="btn-loader hidden">
+                  <i class="fa-solid fa-circle-notch fa-spin"></i> Analyzing...
+                </span>
+              </button>
+
+              <button id="checkAgainBtn" class="btn btn-secondary" title="Re-check currently entered text">
+                <i class="fa-solid fa-rotate-right"></i> Check Again
+              </button>
+            </div>
+
+            <div class="actions-secondary">
+              <button id="copyTextBtn" class="btn btn-outline-secondary" title="Copy text to clipboard">
+                <i class="fa-regular fa-copy"></i> Copy Text
+              </button>
+
+              <button id="downloadTextBtn" class="btn btn-outline-secondary" title="Download as text file">
+                <i class="fa-solid fa-arrow-down-to-bracket"></i> Download
+              </button>
+
+              <button id="clearAllBtn" class="btn btn-danger-soft" title="Clear text and reset analysis">
+                <i class="fa-solid fa-arrows-rotate"></i> Clear All
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Analysis & Correction Suggestions -->
+        <div class="suggestions-panel card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i class="fa-solid fa-list-check text-primary"></i>
+              <span class="panel-title">Correction Suggestions</span>
+              <span id="issuesCountBadge" class="badge badge-gray">0 issues</span>
+            </div>
+
+            <div class="panel-header-actions">
+              <button id="acceptAllBtn" class="btn btn-sm btn-success hidden" title="Apply all suggested corrections">
+                <i class="fa-solid fa-check-double"></i> Accept All
+              </button>
+            </div>
+          </div>
+
+          <!-- Category Filter Tabs -->
+          <div class="filter-tabs">
+            <button class="filter-tab active" data-category="all">
+              All <span class="tab-count" id="tabCountAll">0</span>
+            </button>
+            <button class="filter-tab" data-category="Grammar">
+              Grammar <span class="tab-count" id="tabCountGrammar">0</span>
+            </button>
+            <button class="filter-tab" data-category="Spelling">
+              Spelling <span class="tab-count" id="tabCountSpelling">0</span>
+            </button>
+            <button class="filter-tab" data-category="Punctuation">
+              Punctuation <span class="tab-count" id="tabCountPunctuation">0</span>
+            </button>
+            <button class="filter-tab" data-category="Commonly Confused Words">
+              Confused <span class="tab-count" id="tabCountConfused">0</span>
+            </button>
+          </div>
+
+          <!-- Suggestions List / States -->
+          <div id="suggestionsContainer" class="suggestions-container">
+            <!-- Initial Empty State -->
+            <div id="emptyState" class="state-card empty-state">
+              <div class="state-icon">
+                <i class="fa-solid fa-keyboard text-muted"></i>
+              </div>
+              <h3 class="state-title">Ready for Analysis</h3>
+              <p class="state-description">
+                Type or paste your text in the editor on the left and click <strong>Check Grammar</strong> to detect errors and see instant AI suggestions.
+              </p>
+            </div>
+
+            <!-- Loading Skeleton State -->
+            <div id="loadingState" class="state-card loading-state hidden">
+              <div class="shimmer-spinner">
+                <i class="fa-solid fa-circle-notch fa-spin text-primary"></i>
+              </div>
+              <h3 class="state-title">Analyzing Your Writing...</h3>
+              <p class="state-description">
+                Checking subject-verb agreements, spellings, punctuation, and contextual syntax rules.
+              </p>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+            </div>
+
+            <!-- Perfect / Clean Celebration State -->
+            <div id="perfectState" class="state-card perfect-state hidden">
+              <div class="state-icon celebration-icon">
+                <i class="fa-solid fa-award"></i>
+              </div>
+              <h3 class="state-title">Outstanding Writing!</h3>
+              <p class="state-description">
+                No grammatical, spelling, or punctuation errors were detected in your text. Your writing looks clear and accurate!
+              </p>
+              <div class="perfect-score-badge">
+                <i class="fa-solid fa-star"></i> 100% Accuracy Score
+              </div>
+            </div>
+
+            <!-- Dynamic Error Cards List -->
+            <div id="errorsList" class="errors-list hidden"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Writing Statistics Section -->
+  <section id="stats" class="stats-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Overall Writing Analysis</h2>
+        <p class="section-subtitle">Real-time statistics, error distribution metrics, and accuracy scoring.</p>
+      </div>
+
+      <div class="stats-grid">
+        <!-- Stat Card 1: Words -->
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-blue">
+            <i class="fa-solid fa-file-lines"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Total Words</span>
+            <span id="statWords" class="stat-value">0</span>
+            <span class="stat-hint">Total word count</span>
+          </div>
+        </div>
+
+        <!-- Stat Card 2: Characters -->
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-sky">
+            <i class="fa-solid fa-i-cursor"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Total Characters</span>
+            <span id="statChars" class="stat-value">0</span>
+            <span class="stat-hint">Including spaces & symbols</span>
+          </div>
+        </div>
+
+        <!-- Stat Card 3: Grammar Mistakes -->
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-red">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Grammar Mistakes</span>
+            <span id="statGrammar" class="stat-value">0</span>
+            <span class="stat-hint">Agreement & syntax</span>
+          </div>
+        </div>
+
+        <!-- Stat Card 4: Spelling Mistakes -->
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-amber">
+            <i class="fa-solid fa-spell-check"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Spelling Mistakes</span>
+            <span id="statSpelling" class="stat-value">0</span>
+            <span class="stat-hint">Typos & misspellings</span>
+          </div>
+        </div>
+
+        <!-- Stat Card 5: Punctuation Mistakes -->
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-purple">
+            <i class="fa-solid fa-quote-right"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Punctuation Errors</span>
+            <span id="statPunctuation" class="stat-value">0</span>
+            <span class="stat-hint">Commas & spacing</span>
+          </div>
+        </div>
+
+        <!-- Stat Card 6: Accuracy Percentage -->
+        <div class="stat-card accuracy-card">
+          <div class="stat-icon-wrapper icon-green">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Writing Accuracy</span>
+            <div class="accuracy-value-row">
+              <span id="statAccuracy" class="stat-value accuracy-value">100%</span>
+              <span id="accuracyRating" class="accuracy-pill rating-excellent">Perfect</span>
+            </div>
+            <div class="progress-bar-track">
+              <div id="accuracyProgressBar" class="progress-bar-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Intelligent Capabilities</h2>
+        <p class="section-subtitle">Designed to help students, developers, and writers polish their English communication.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon icon-blue">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h3 class="feature-title">1. Grammar Detection</h3>
+          <p class="feature-desc">
+            Instantly detects subject-verb agreement mismatches, irregular verb forms, pronoun cases, and article confusion like "I has a apple".
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-amber">
+            <i class="fa-solid fa-spell-check"></i>
+          </div>
+          <h3 class="feature-title">2. Spelling Correction</h3>
+          <p class="feature-desc">
+            Finds typographical errors and phonetically similar misspellings, suggesting high-probability dictionary alternatives.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-purple">
+            <i class="fa-solid fa-ellipsis"></i>
+          </div>
+          <h3 class="feature-title">3. Punctuation Checking</h3>
+          <p class="feature-desc">
+            Spots missing commas, misplaced apostrophes, dangling periods, repeated spaces, and sentence boundary errors.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-sky">
+            <i class="fa-solid fa-bolt-lightning"></i>
+          </div>
+          <h3 class="feature-title">4. Instant Suggestions</h3>
+          <p class="feature-desc">
+            Applies single-click correction replacements directly into your document editor with automated offset realignment.
+          </p>
+        </div>
+
+        <div class="feature-card feature-card-wide">
+          <div class="feature-icon icon-green">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h3 class="feature-title">5. Writing Analysis</h3>
+          <p class="feature-desc">
+            Provides comprehensive text metrics including total word count, character count, categorized mistake breakdown, and a dynamic writing accuracy score.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <div class="about-card card">
+        <div class="about-grid">
+          <div class="about-text">
+            <div class="pill-badge pill-blue">
+              <i class="fa-solid fa-graduation-cap"></i> College Workshop & Educational Project
+            </div>
+            <h2 class="about-title">About AI Grammar Checker</h2>
+            <p class="about-paragraph">
+              The <strong>AI Grammar Checker</strong> is a modern full-stack web application designed to demonstrate the real-world application of Natural Language Processing (NLP) rule engines and modern web architecture.
+            </p>
+            <p class="about-paragraph">
+              Built with a responsive frontend (HTML5, CSS3, JavaScript) and a Python Flask microservices backend, it interfaces with the powerful <strong>LanguageTool Engine</strong> to parse sentence token streams, extract contextual grammatical rules, and calculate detailed writing quality statistics.
+            </p>
+
+            <div class="tech-stack-pills">
+              <span class="tech-pill"><i class="fa-brands fa-python"></i> Python Flask</span>
+              <span class="tech-pill"><i class="fa-solid fa-gears"></i> LanguageTool NLP</span>
+              <span class="tech-pill"><i class="fa-brands fa-js"></i> Vanilla JavaScript</span>
+              <span class="tech-pill"><i class="fa-brands fa-css3-alt"></i> Modern CSS3</span>
+              <span class="tech-pill"><i class="fa-brands fa-html5"></i> Semantic HTML5</span>
+            </div>
+          </div>
+
+          <div class="about-workflow-box">
+            <h4 class="workflow-title">
+              <i class="fa-solid fa-diagram-project text-primary"></i> Application Architecture
+            </h4>
+            <div class="workflow-steps">
+              <div class="workflow-step">
+                <span class="step-badge">1</span>
+                <div>
+                  <strong>User Input:</strong> User enters text or selects a demo sample.
+                </div>
+              </div>
+              <div class="workflow-step">
+                <span class="step-badge">2</span>
+                <div>
+                  <strong>Flask API:</strong> <code>/api/check-grammar</code> receives payload via JSON POST.
+                </div>
+              </div>
+              <div class="workflow-step">
+                <span class="step-badge">3</span>
+                <div>
+                  <strong>LanguageTool Engine:</strong> Performs morphological & syntax analysis.
+                </div>
+              </div>
+              <div class="workflow-step">
+                <span class="step-badge">4</span>
+                <div>
+                  <strong>Client UI:</strong> Interactive cards, highlights, and 1-click corrections.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="logo-icon small">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <span class="footer-title">AI Grammar Checker</span>
+      </div>
+      <p class="footer-desc">
+        A full-stack AI-powered writing assistant engineered for student clarity, academic excellence, and professional communication.
+      </p>
+      <div class="footer-copy">
+        &copy; 2026 AI Grammar Checker. Built with Python, Flask & LanguageTool.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- Application Logic -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
